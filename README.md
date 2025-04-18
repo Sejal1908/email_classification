@@ -152,6 +152,3 @@ If you want to deploy this application on a cloud service (e.g., Hugging Face Sp
 2. Push the code to your preferred cloud service or platform.
 3. Ensure the cloud platform has the necessary dependencies installed (e.g., spaCy, scikit-learn).
 
----
-
-Let me know if you'd like me to adjust anything or add more details!
