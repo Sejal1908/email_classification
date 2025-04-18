@@ -5,5 +5,6 @@ from api import classify_email_route
 app = Flask(__name__)
 app.register_blueprint(classify_email_route, url_prefix="")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=7860)
+
