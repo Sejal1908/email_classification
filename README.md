@@ -1,154 +1,204 @@
 # email_Classification_support_Sejal
-The goal of this assignment is to design and implement an email classification system for a company's support team. The system should categorize incoming support emails into predefined categories while ensuring that personal information (PII) is masked before processing. After classification, the masked data should be restored to its original form.
+A Python-based Flask API that detects and masks Personally Identifiable Information (PII) in email content and classifies the email into relevant categories using a machine learning model. This project is deployed via Hugging Face Spaces.
+
+🚀 Demo
+Paste your email content into the API via a POST request, and get back a masked version with all sensitive entities hidden, alongside the predicted email category.
+
+----------------------------------------------------------------------------------------
+
+🔍 Features
+✅ Regex and NER-based PII Masking (name, email, phone number, DOB, etc.)
+
+🤖 ML-based Email Classification (e.g., General, Finance, Promotions)
+
+📡 REST API built using Flask
+
+🧪 Ready-to-test JSON response format
+
+☁️ Hosted on Hugging Face Spaces with GitHub integration
+
+--------------------------------------------------------------------------------------------
+📂 Project Structure
+
+.
+├── app.py                  # Main Flask app entrypoint
+├── api.py                  # API routes and logic
+└── data/
+   └── emails.csv         # the Data set 
+├── models.py               # Classification logic and ML model
+├── utils.py                # PII masking functions
+├── train_model.py          # Script to train and save ML model
+├── requirements.txt        # Required Python dependencies
+├── README.md               # You're here!
+├── space.yaml              # Hugging Face deployment file
+├── test_input.json         # Sample input for testing
+└── model/
+    └── email_classifier.pkl      # Pretrained ML model
+
+-----------------------------------------------------------------------------------------
+
+🧠 Technologies Used
+Python 3.10
+
+Flask
+
+Scikit-learn
+
+Regex + SpaCy (for PII detection)
 
 
-Here's a detailed `README.md` for your email classification project, including all the necessary information, based on the files you've shared:
+Docker + Hugging Face Spaces
 
----
+GitHub (CI/CD)
 
-# Email Classification with PII Masking
+ ------------------------------------------------------------------------------------------
 
-This project implements an email classification system with **PII masking** using regex and spaCy's NER. The system is based on a machine learning model that classifies emails into different categories, such as **Purchase**, **Support**, **Feedback**, etc.
+ 🔧 Installation (Run Locally)
 
-## Project Structure
+ # Clone the repository
+git clone https://github.com/Sejal1908/email-classification-api.git
+cd email-classification-api
 
-- **data/emails.csv**: Dataset containing emails and their corresponding categories.
-- **masking/ pii_masker.py**: Code to mask sensitive PII (Personally Identifiable Information) fields like email, phone number, Aadhar, CVV, etc.
-- **models.py**: Contains the model loading, fallback classification function, and ML model logic.
-- **train_model.py**: Script for training the email classification model using RandomForest and TF-IDF.
-- **api.py**: Contains the API code that processes email input, applies PII masking, and classifies the email.
-- **utils.py**: Contains utility functions for PII masking, including regex-based entity detection.
-- **requirements.txt**: Contains all the required libraries
+# Create virtual environment (optional but recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-## Prerequisites
+# Install dependencies
+pip install -r requirements.txt
 
-1. **Python 3.x**
-2. **pip** (Python package manager)
-
-## Setup
-
-1. Clone the repository or download the project files to your local machine.
-2. Install the required dependencies by running:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Download the **spaCy** model used for NER:
-   ```bash
-   python -m spacy download en_core_web_sm
-   ```
-
-## How to Run the Project
-
-### Step 1: Train the Model
-
-Before running the API, you need to train the email classification model:
-
-```bash
-python train_model.py
-```
-
-This will train the model using the **emails.csv** dataset and save it in the **models** directory as `email_classifier.pkl`. The model uses **RandomForestClassifier** and **TF-IDF Vectorizer**.
-
-### Step 2: Run the API
-
-Once the model is trained, you can run the FastAPI server by running the following command:
-
-```bash
+# Run the app
 python app.py
-```
 
-This will start the API on `http://localhost:5000/`.
+-------------------------------------------------------------------------------
 
-### Step 3: Testing the API
+🧪 API Usage
 
-You can test the API by sending a POST request to `http://localhost:5000/classify_email` with the following body:
+I have used postman for this project
 
-```json
+▶️ Endpoint
+POST /classify_email
+
+▶️ Request Headers
+pgsql
+Copy code
+Content-Type: application/json
+
+▶️ Request Body
+json
+Copy code
 {
-    "email": "Contact Alice Wonderland at alice@wonder.land or +91 98765 43210. DOB: 01/01/1980."
+  "email": "Contact Alice Wonderland at alice@wonder.land or +91 98765 43210. DOB: 01/01/1980."
 }
-```
 
-### Example Response:
-
-```json
+✅ Successful Response Format
+json
+Copy code
 {
-    "category_of_the_email": "General",
-    "input_email_body": "Contact Alice Wonderland at alice@wonder.land or +91 98765 43210. DOB: 01/01/1980.",
-    "list_of_masked_entities": [
-        {
-            "classification": "full_name",
-            "entity": "Contact Alice Wonderland",
-            "position": [
-                0,
-                24
-            ]
-        },
-        {
-            "classification": "email",
-            "entity": "alice@wonder.land",
-            "position": [
-                28,
-                45
-            ]
-        },
-        {
-            "classification": "phone_number",
-            "entity": "+91 98765 43210",
-            "position": [
-                49,
-                64
-            ]
-        },
-        {
-            "classification": "dob",
-            "entity": "01/01/1980",
-            "position": [
-                71,
-                81
-            ]
-        }
-    ],
-    "masked_email": "[full_name] at [email] or [phone_number]. DOB: [dob]."
+  "input_email_body": "Contact Alice Wonderland at alice@wonder.land or +91 98765 43210. DOB: 01/01/1980.",
+  "list_of_masked_entities": [
+    {
+      "position": [0, 24],
+      "classification": "full_name",
+      "entity": "Contact Alice Wonderland"
+    },
+    {
+      "position": [28, 45],
+      "classification": "email",
+      "entity": "alice@wonder.land"
+    },
+    {
+      "position": [49, 64],
+      "classification": "phone_number",
+      "entity": "+91 98765 43210"
+    },
+    {
+      "position": [71, 81],
+      "classification": "dob",
+      "entity": "01/01/1980"
+    }
+  ],
+  "masked_email": "[full_name] at [email] or [phone_number]. DOB: [dob].",
+  "category_of_the_email": "General"
 }
-```
 
-## Files Overview
+-------------------------------------------------------------------------------------
 
-### **`train_model.py`**
+⚙️ Hugging Face Deployment
 
-This script trains a machine learning model using a RandomForest classifier and a TF-IDF vectorizer. It saves the trained model and vectorizer in the `models` folder.
+Go to https://huggingface.co/spaces and click "Create Space"
 
-### **`models.py`**
+Choose SDK as Docker
 
-Contains the logic for classifying emails using a machine learning model if present, or falling back to a rule-based approach.
+Select "Link to GitHub Repository"
 
-### **`api.py`**
+Ensure you include a space.yaml or README.md for Hugging Face to build correctly
 
-Defines a Flask-based API endpoint (`/classify_email`) that processes an incoming email, applies PII masking, and classifies it into a category using the trained model.
+Push your code to GitHub — it auto-deploys!
 
-### **`masking/pii_masker.py`**
+Example space.yaml
 
-Contains the code for detecting and masking PII entities using regex patterns for **Aadhar**, **phone number**, **email**, **credit card**, and more. It uses **spaCy** for name entity recognition (NER).
+# This file tells Hugging Face Spaces how to run your app
+sdk: docker
+python_version: "3.10"
+---------------------------------------------------------------------------------------
+🧠 Training the Classifier
 
-### **`utils.py`**
+You can train and save your ML model using the provided train_model.py script.
 
-Contains utility functions for PII masking, including regular expressions to find and mask sensitive information like full names, credit card numbers, and dates of birth.
+bash
+Copy code
+python train_model.py
+This will generate a classifier.pkl saved in the /model folder which your app will load at runtime.
 
-## How It Works
+-----------------------------------------------------------------------------------------------------
 
-1. **PII Masking**:  
-   The email body is first processed using **PII patterns** to identify sensitive data such as phone numbers, Aadhar numbers, and credit card details. After detection, each entity is masked in the email text, and the masked entities are returned.
+DockerFile
 
-2. **Email Classification**:  
-   The email body, after masking, is passed through a **machine learning model** that classifies it into categories such as "Purchase", "Support", or "Feedback". If the model is unavailable, a rule-based fallback approach is used for classification.
+# Use official Python image
+FROM python:3.10
 
-## Deployment
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-If you want to deploy this application on a cloud service (e.g., Hugging Face Spaces or Heroku), follow these steps:
+# Set working directory
+WORKDIR /code
 
-1. Create a `requirements.txt` file that includes the required libraries (already provided).
-2. Push the code to your preferred cloud service or platform.
-3. Ensure the cloud platform has the necessary dependencies installed (e.g., spaCy, scikit-learn).
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Copy all project files
+COPY . .
+
+# Expose port
+EXPOSE 7860
+
+# Run the app
+CMD ["python", "app.py"]
+
+--------------------------------------------------------------------------------------------
+
+Docker Setup
+
+1. Build the Docker image:
+docker build -t email-classification-api .
+
+2. Run the Docker container:
+docker run -p 7860:7860 email-classification-api
+
+3. Access the application on http://localhost:7860.
+--------------------------------------------------------------------------------------------
+📜 License
+
+This project is licensed under the MIT License 
+--------------------------------------------------------------------------------------------
+
+👩‍💻 Author
+Sejal Vhankade
+🔗 [Github](https://github.com/Sejal1908)
+🔗 [LinkedIn](https://www.linkedin.com/in/sejalvhankade/)
+✉️ sejal.vhankade@gmail.com
+
 
